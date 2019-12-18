@@ -14,13 +14,21 @@ class ArticlesController extends Controller
             'articles'=>$articles
         ]);
     }
+//
+//    public function show($id){
+//        $article = Article::findOrFail($id);
+//        return view('articles.article',[
+//            'article' => $article
+//        ]);
+//    }
 
-    public function show($id){
-        $article = Article::findOrFail($id);
+
+    public function show(Article $article){
         return view('articles.article',[
-            'article' => $article
+            'article'=>$article
         ]);
     }
+
     public function create(){
         return view('articles.create');
     }
@@ -28,15 +36,55 @@ class ArticlesController extends Controller
         //dd("hello");
         //dump(request()->all());
 
-        $article = new Article();
 
-        $article->title = request('title');
+//        validations
+//        request()->validate([
+//            'title' => 'required',
+//            'excerpt' => 'required',
+//            'body' => 'required'
+//        ]);
 
-        $article->excerpt = request('excerpt');
-        $article->body = request('body');
+//
+//        $article = new Article();
+//
+//        $article->title = request('title');
+//
+//        $article->excerpt = request('excerpt');
+//        $article->body = request('body');
+//
+//        $article->save();
 
-        $article->save();
+        Article::create($this->validatedData());
 
         return redirect('/articles');
+    }
+
+    public function edit(Article $article){
+        return view('articles.edit',compact('article'));
+    }
+//
+//    public function update($id){
+//        $article = new Article();
+//
+//        $article->title = request('title');
+//
+//        $article->excerpt = request('excerpt');
+//        $article->body = request('body');
+//        $article->save();
+//        return redirect('/articles');
+//    }
+
+    public function update(Article $article){
+
+        $article->update($this->validatedData());
+        return redirect('/articles/'.$article->id);
+    }
+
+    public function validatedData(){
+        return request()->validate([
+            'title' => 'required',
+            'excerpt' => 'required',
+            'body' => 'required'
+        ]);
     }
 }

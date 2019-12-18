@@ -7,4 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class Article extends Model
 {
     //
+    protected $fillable = ['title','excerpt','body'];
+    //OR
+    //protected $guarded = [];
+//
+//    public function getRouteKeyName()
+//    {
+//            return('title');
+//
+//    }
 }
