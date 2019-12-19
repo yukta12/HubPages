@@ -77,7 +77,7 @@ class ArticlesController extends Controller
     public function update(Article $article){
 
         $article->update($this->validatedData());
-        return redirect('/articles/'.$article->id);
+        return redirect(route('articles.show',$article->id));
     }
 
     public function validatedData(){
