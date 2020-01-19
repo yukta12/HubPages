@@ -31,7 +31,19 @@
                         @endif
                     </div>
                 </div>
-
+                <div class="field">
+                    <label for="tag" class="label">Tags</label>
+                    <div class="control select is-multiple is-block">
+                        <select name="tags[]" id="tags" multiple class="is-block">
+                            @foreach($tags as $tag)
+                                <option value="{{ $tag->id }}">{{$tag->name}}</option>
+                            @endforeach
+                        </select>
+                        @error('tags')
+                        <p class="help is-danger">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
                 <div class="field">
                     <label for="excerpt" class="label">Excerpt</label>
                     <div class="control">

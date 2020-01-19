@@ -2,89 +2,101 @@
 
 namespace App\Http\Controllers;
 
-use App\Article;
 use Illuminate\Http\Request;
-
+use App\Article;
+use App\Tag;
 class ArticlesController extends Controller
 {
-    //
     public function index(){
-        $articles = Article::take(3)->latest('updated_at')->get();
+        if(request('tag')){
+//            dd(request('tag'));
+            $articles = Tag::where('name', request('tag'))->firstOrFail()->articles;
+
+        }else{
+            $articles = Article::take(3)->latest('updated_at')->get();
+        }
+
         return view('articles.index',[
-            'articles'=>$articles
+            'articles' => $articles
         ]);
     }
-//
+
 //    public function show($id){
-//        $article = Article::findOrFail($id);
-//        return view('articles.article',[
-//            'article' => $article
-//        ]);
-//    }
-
-
     public function show(Article $article){
+//        $article = Article::findOrFail($id);
         return view('articles.article',[
-            'article'=>$article
+            'article' => $article
         ]);
     }
-
     public function create(){
-        return view('articles.create');
+        $tags = Tag::all();
+        return view('articles.create',compact('tags'));
     }
     public function store(){
-        //dd("hello");
-        //dump(request()->all());
 
-
-//        validations
 //        request()->validate([
 //            'title' => 'required',
 //            'excerpt' => 'required',
 //            'body' => 'required'
 //        ]);
-
-//
 //        $article = new Article();
-//
+//        //dd("hello");
+//        //dump(request()->all());
 //        $article->title = request('title');
-//
 //        $article->excerpt = request('excerpt');
 //        $article->body = request('body');
-//
 //        $article->save();
+        //Upr ka chiz niche funtion me kar diya
+//        $this->validateData();
+//
+//
+//        Article::create([
+//            'title'=> \request('title'),
+//            'excerpt'=> \request('excerpt'),
+//            'body' => \request('body')
+//        ]);
 
-        Article::create($this->validatedData());
+        $article = new Article($this->validateData());
+        $article->user_id=1;
+        $article->save();
+        $article->tags()->attach(request('tags'));
 
         return redirect('/articles');
     }
 
     public function edit(Article $article){
+//        $article = Article::findOrFail($id)
         return view('articles.edit',compact('article'));
     }
-//
 //    public function update($id){
-//        $article = new Article();
-//
+    public function update(Article $article){
+        //dump(request()->all());
+//        $article = Article::findOrFail($id);
 //        $article->title = request('title');
-//
 //        $article->excerpt = request('excerpt');
 //        $article->body = request('body');
 //        $article->save();
-//        return redirect('/articles');
-//    }
-
-    public function update(Article $article){
-
-        $article->update($this->validatedData());
+//        Iske badle update method likh diya
+        $article->update($this->validateData());
+//        return redirect('/articles/'.$article->id);
         return redirect(route('articles.show',$article->id));
     }
 
-    public function validatedData(){
+    public function validateData(){
         return request()->validate([
             'title' => 'required',
             'excerpt' => 'required',
-            'body' => 'required'
+            'body' => 'required',
+            'tags' =>'exists:tags,id'
+        ],[
+            'title.required'=>'Ohh error in title',
+            'tags.exists' => 'chal bhag!',
         ]);
+//        return request()->validate([
+//            'title' => 'required',
+//            'excerpt' => 'required',
+//            'body' => 'required',
+//
+//        ]);
     }
 }

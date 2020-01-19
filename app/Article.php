@@ -16,4 +16,9 @@ class Article extends Model
 //            return('title');
 //
 //    }
+
+
+    public function tags(){
+        return $this->belongsToMany(Tag::class);
+    }
 }

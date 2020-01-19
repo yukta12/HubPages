@@ -15,7 +15,11 @@
                         <p>
                             {{ $article->body }}
                         </p>
-
+                        <p>
+                            @foreach($article->tags as $tag)
+                                <a href="/articles/?id={{ $tag->name }}">{{ $tag->name }}</a>
+                                @endforeach
+                        </p>
 
 
 
